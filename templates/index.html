@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Title of the web page displayed in the browser tab -->
+		<title>Stock Visualizer</title>
+		<link rel="stylesheet" href="/static/app.css" />
+	</head>
+
+	<body>
+		<!-- Main heading of the web page -->
+		<h1>Stock Data Visualizer</h1>
+
+		<!-- Form for user input with method="post" to send data to the server -->
+		<form method="post">
+			<!-- Conditional display of error messages, if any -->
+			{% if error %}
+			<div class="error-message">{{ error }}</div>
+			{% endif %}
+
+			<!-- Dropdown for selecting a stock symbol -->
+			<label for="symbol">Stock Symbol:</label>
+			<select name="symbol" id="stock-symbol">
+				<!-- Loop through each symbol provided by the server and create an option for each -->
+				{% for symbol in symbols %}
+				<option value="{{ symbol }}">{{ symbol }}</option>
+				{% endfor %}
+			</select>
+
+			<!-- Dropdown for selecting the chart type (line or bar) -->
+			<label for="chart_type">Chart Type:</label>
+			<select id="chart_type" name="chart_type">
+				<option value="line">Line</option>
+				<option value="bar">Bar</option>
+			</select>
+
+			<!-- Dropdown for selecting the time series type -->
+			<label for="time_series">Time Series:</label>
+			<select id="time_series" name="time_series">
+				<option value="1">TIME_SERIES_INTRADAY</option>
+				<option value="2">TIME_SERIES_DAILY</option>
+				<option value="3">TIME_SERIES_WEEKLY</option>
+				<option value="4">TIME_SERIES_MONTHLY</option>
+			</select>
+
+			<!-- Input fields for selecting start and end dates -->
+			<label for="start_date">Start Date:</label>
+			<input type="date" id="start_date" name="start_date" />
+
+			<label for="end_date">End Date:</label>
+			<input type="date" id="end_date" name="end_date" />
+
+			<!-- Submit button for the form -->
+			<input type="submit" value="Visualize" />
+		</form>
+	</body>
+</html>
