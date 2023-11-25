@@ -1,9 +1,10 @@
+import os
 import pandas as pd
 from pandas import to_datetime
 import matplotlib
 matplotlib.use('Agg')  # Use a non-interactive backend
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator
+from matplotlib.ticker import MaxNLocator, FuncFormatter
 
 def process_stock_data(data):
     if "Error Message" in data:
@@ -18,16 +19,34 @@ def process_stock_data(data):
     df.index = pd.to_datetime(df.index)
     return df.sort_index()
 
-import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator
-from pandas import to_datetime
+def delete_old_photos(save_path):
+    # Ensure the image directory exists
+        image_dir = os.path.dirname(save_path)
+        os.makedirs(image_dir, exist_ok=True)
+
+        # Delete all files in the image directory
+        for filename in os.listdir(image_dir):
+            file_path = os.path.join(image_dir, filename)
+            try:
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+            except Exception as e:
+                print(f"Error deleting file: {e}")
 
 def plot_and_save_stock_data(df, symbol, chart_type, start_date, end_date, save_path, column='Close'):
-    # Check if DataFrame is empty or if the specified column doesn't exist
+    #First, delete old photos in the images folder.
+    delete_old_photos(save_path)
+    
+    # Check if DataFrame is empty
     if df.empty:
         raise ValueError("The provided DataFrame is empty.")
-    if column not in df.columns:
-        raise ValueError(f"The column '{column}' does not exist in the DataFrame.")
+
+    # Convert the column to numeric, setting errors='coerce' to handle non-numeric values
+    df[column] = pd.to_numeric(df[column], errors='coerce')
+
+    # Check if the column contains any numeric data after conversion
+    if df[column].isnull().all():
+        raise ValueError(f"The column '{column}' does not contain numeric data.")
 
     # Convert start and end dates to datetime, handling empty or invalid inputs
     if start_date:
@@ -66,19 +85,32 @@ def plot_and_save_stock_data(df, symbol, chart_type, start_date, end_date, save_
     plt.xlabel("Date")
     plt.ylabel("Price")
 
-    # Set y-axis to start at 0 and dynamically set the upper limit based on the data
-    ax.set_ylim(bottom=0, top=max(df[column])*1.1)  # 10% padding above the max value
+    # Set y-axis limits
+    max_value = df[column].max()
+    if pd.notna(max_value):  # Check if max_value is not NaN
+        ax.set_ylim(top=max_value * 1.1)  # 10% padding above the max value
+    else:
+        raise ValueError("Unable to determine the y-axis limits due to non-numeric data.")
 
     # Set the maximum number of y-axis ticks to 5
     ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+    
+    # Custom formatter for the y-axis
+    def currency_formatter(x, pos):
+        return f'${x}'
+    ax.yaxis.set_major_formatter(FuncFormatter(currency_formatter))
 
-    # Rotate x-axis labels
-    plt.setp(ax.get_xticklabels(), rotation=45)
+    # Improve x-axis label spacing and rotation
+    plt.xticks(rotation=45, ha="right")  # Rotate labels and align to the right
 
+    
+    plt.grid(True)
+    
     plt.legend()  # Add a legend to distinguish the plotted column
 
     # Save the figure
     plt.savefig(save_path, dpi=300)
     plt.close()
-
+    
+    print(f"Plot saved successfully at {save_path}")
     return f"Plot saved successfully at {save_path}"
