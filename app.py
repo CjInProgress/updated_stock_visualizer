@@ -52,13 +52,13 @@ def index():
                 # Generate a unique filename for the graph image
                 filename = f"{symbol}_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
                 save_path = os.path.join('static', 'images', filename)
+                print("Image file path successfully generated")
 
                 # Plot and save the stock data
                 plot_and_save_stock_data(processed_data, symbol, chart_type, start_date, end_date, save_path)
 
                 # Generate the URL for the image
                 graph_image_url = url_for('static', filename=os.path.join('images', filename))
-                print("Image file path successfully generated")
                 return render_template('result.html', graph_url=graph_image_url, symbol=symbol)
 
         # Error handling for failed data fetch or processing
