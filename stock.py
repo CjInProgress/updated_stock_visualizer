@@ -72,6 +72,7 @@ def plot_and_save_stock_data(df, symbol, chart_type, start_date, end_date, save_
 
     # Create the plot
     fig, ax = plt.subplots()
+    plt.tick_params(axis='x', labelsize=10)
 
     # Plot the data according to chart type
     if chart_type == "line":
@@ -102,6 +103,8 @@ def plot_and_save_stock_data(df, symbol, chart_type, start_date, end_date, save_
 
     # Improve x-axis label spacing and rotation
     plt.xticks(rotation=45, ha="right")  # Rotate labels and align to the right
+    plt.tick_params(axis='x', labelsize=10)
+    plt.tight_layout()
 
     
     plt.grid(True)
