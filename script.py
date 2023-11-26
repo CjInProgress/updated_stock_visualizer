@@ -24,7 +24,6 @@ def fetch_all_stock_data(symbol, time_series_function):
     try:
         response = requests.get(base_url, params=params)
         response.raise_for_status()
-        print(response.json())  # Add this line for debugging
         return response.json()
     except requests.RequestException as e:
         print(f"Error fetching data: {e}")
