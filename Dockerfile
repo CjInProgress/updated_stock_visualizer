@@ -8,8 +8,7 @@ WORKDIR /app
 COPY . /app
 
 # Install the required dependencies
-# This includes Flask and any other libraries your app needs (like requests, pandas, matplotlib)
-RUN pip install Flask requests pandas matplotlib
+RUN pip install -r requirements.txt
 
 # Make port 5000 available to the world outside this container
 # This is the default port that Flask runs on
