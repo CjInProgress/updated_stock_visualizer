@@ -58,6 +58,7 @@ def index():
 
                 # Generate the URL for the image
                 graph_image_url = url_for('static', filename=os.path.join('images', filename))
+                print("Image file path successfully generated")
                 return render_template('result.html', graph_url=graph_image_url, symbol=symbol)
 
         # Error handling for failed data fetch or processing
