@@ -17,6 +17,7 @@ def process_stock_data(data):
     df = pd.DataFrame.from_dict(data[ts_key], orient="index")
     df.columns = ["Open", "High", "Low", "Close", "Volume"]
     df.index = pd.to_datetime(df.index)
+    print("Data successfully processed")
     return df.sort_index()
 
 def delete_old_photos(save_path):
@@ -30,6 +31,7 @@ def delete_old_photos(save_path):
             try:
                 if os.path.isfile(file_path):
                     os.remove(file_path)
+                    print(f"Old photos deleted from {file_path}")
             except Exception as e:
                 print(f"Error deleting file: {e}")
 
